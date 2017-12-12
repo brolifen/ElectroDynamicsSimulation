@@ -108,7 +108,7 @@ public class CurrentGrid implements CurrentSegment {
   ArrayList<CurrentElement> currentElements;
   PVector translateVector;
   int gridsize;
-  int gridSpacing ;
+  float gridSpacing ;
   String type;
   float currentScaler;
   float current;
@@ -116,10 +116,10 @@ public class CurrentGrid implements CurrentSegment {
   ConfigAdjuster configAdjuster;
   Object rootReference;
 
-  CurrentGrid(PVector translateVector, int gridsize, int gridSpacing, String type, float currentScaler, float current, PVector currentDirection, ConfigAdjuster configAdjuster,Object rootReference) { 
+  CurrentGrid(PVector translateVector, int gridsize, String type, float currentScaler, float current, PVector currentDirection, ConfigAdjuster configAdjuster, Object rootReference) { 
     this.translateVector = translateVector;
     this.gridsize = gridsize;
-    this.gridSpacing = gridSpacing;
+    this.gridSpacing = configAdjuster.elementLength;
     this.type = type;
     this.currentScaler = currentScaler;
     this.current = current;
@@ -134,16 +134,29 @@ public class CurrentGrid implements CurrentSegment {
 
     int ammountOfElements = int(this.gridsize/this.gridSpacing);
 
-    if (this.type == "rotational") {
-    } else if (this.type == "uniform") {
+    if (this.type == "uniform") {
       for (int i=1; i < ammountOfElements+1; i++) {
-        int xPosition = -this.gridsize/2 + this.gridSpacing * i;
+        float xPosition = -this.gridsize/2 + this.gridSpacing * i;
         for (int j=1; j < ammountOfElements+1; j++) {
-          int yPosition = this.gridsize/2 - this.gridSpacing * j;
-          PVector elementPosition = new PVector(xPosition, yPosition,0);
+          float yPosition = this.gridsize/2 - this.gridSpacing * j;
+          PVector elementPosition = new PVector(xPosition, yPosition, 0);
           elementPosition.add(this.translateVector);
-          CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection.mult(currentScaler), this.current, this.configAdjuster,this.rootReference);
+          this.currentDirection = this.currentDirection.mult(currentScaler);
+          CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection, this.current, this.configAdjuster, this.rootReference);
           currentElements.add(currentElement);
+        }
+      }
+    } else if (this.type == "rotational") {
+      for (int i=1; i < ammountOfElements+1; i++) {
+        float xPosition = -this.gridsize/2 + this.gridSpacing * i;
+        for (int j=1; j < ammountOfElements+1; j++) {
+          float yPosition = this.gridsize/2 - this.gridSpacing * j;
+          PVector elementPosition = new PVector(xPosition, yPosition, 0);
+          elementPosition.add(this.translateVector);
+          PVector currentDirection = new PVector(-yPosition,xPosition,0);
+          float magnitude = currentDirection.mag();
+          CurrentElement currentElement = new CurrentElement(elementPosition, currentDirection, this.current*magnitude*this.configAdjuster.currentMultiplier, this.configAdjuster, this.rootReference);
+          currentElements.add(currentElement); //<>//
         }
       }
     }
@@ -156,7 +169,7 @@ public class CurrentGrid implements CurrentSegment {
 
   void showCurrentElements() {
     for (CurrentElement currentElement : this.currentElements) {
-      currentElement.show();
+      currentElement.show(); //<>//
     }
   }
 

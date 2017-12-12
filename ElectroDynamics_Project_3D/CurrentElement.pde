@@ -21,10 +21,10 @@ public class CurrentElement { //<>//
   }
 
   void show() {
-    PVector startSegment = PVector.add(PVector.mult(this.currentDirection, (configAdjuster.elementLength/2)*configAdjuster.elementScaler), this.position);
-    PVector endSegment = PVector.add(PVector.mult(this.currentDirection, (-configAdjuster.elementLength/2)*configAdjuster.elementScaler), this.position);
+    PVector startSegment = PVector.add(PVector.mult(this.currentDirection.copy(), (configAdjuster.elementLength/2)*configAdjuster.elementScaler*this.current), this.position);
+    PVector endSegment = PVector.add(PVector.mult(this.currentDirection.copy(), (-configAdjuster.elementLength/2)*configAdjuster.elementScaler*this.current), this.position);
 
-    startSegment = toScreenCoords(startSegment);
+    startSegment = toScreenCoords(startSegment); //<>//
     endSegment = toScreenCoords(endSegment);
 
     if (this.rootReference instanceof Magnet ) {
@@ -121,6 +121,9 @@ public class CurrentElement { //<>//
   }
 
   void showForce() {
+    this.Force = this.Force.normalize();
+    this.Force.mult(this.configAdjuster.forceMult);
+    
     PVector startSegment = this.position.copy();
     PVector endSegment = PVector.add(this.Force, this.position).copy();
 

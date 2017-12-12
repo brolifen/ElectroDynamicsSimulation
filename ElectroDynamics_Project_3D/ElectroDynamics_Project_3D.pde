@@ -12,9 +12,10 @@ ConfigAdjuster configAdjuster;
 TextDisplayer textDisplayer;
 PeasyCam camera;
 
-float magnetCurrent = 10.0;
+float magnetCurrent = 1.0;
 float circuitCurrent = 1.0;
 float forceMultiplier = 700.0;
+float currentMultiplier = 0.001;
 float elementLength = 10;
 float circuitWidth = 100;
 float circuitHeight = 100; 
@@ -41,6 +42,7 @@ void setup () {
   configAdjuster = new ConfigAdjuster();
   configAdjuster.setForceMultiplier(forceMultiplier);
   configAdjuster.setElementLength(elementLength);
+  configAdjuster.setCurrentMultiplier(currentMultiplier);
   configAdjuster.setColors(circuitElementColor, tipColor, tailColor, forceLineColor, magnetElementColor);
   configAdjuster.textSize = textSize;
 }
@@ -58,29 +60,33 @@ void draw() {
   //create the movable current segment, calculate the forces on it and show it
   //CurrentSegment dynamiccurrentSegment = new LineSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), new PVector(circuitWidth*2, 0, 0), magnetCurrent, configAdjuster);
   //CurrentSegment dynamiccurrentSegment = new ArcSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
-  CurrentSegment dynamiccurrentSegment = new CurrentArc(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster, null);
-  dynamiccurrentSegment.calculateForce(magnets);
-  dynamiccurrentSegment.showCurrentElements();
-  dynamiccurrentSegment.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment2 = new CurrentLine(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster, null);
-  dynamiccurrentSegment2.calculateForce(magnets);
-  dynamiccurrentSegment2.showCurrentElements();
-  dynamiccurrentSegment2.showElementForces();
+  //CurrentSegment dynamiccurrentSegment = new CurrentArc(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster, null);
+  //dynamiccurrentSegment.calculateForce(magnets);
+  //dynamiccurrentSegment.showCurrentElements();
+  //dynamiccurrentSegment.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment3 = new CurrentLine(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster, null);
-  dynamiccurrentSegment3.calculateForce(magnets);
-  dynamiccurrentSegment3.showCurrentElements();
-  dynamiccurrentSegment3.showElementForces();
+  //CurrentSegment dynamiccurrentSegment2 = new CurrentLine(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster, null);
+  //dynamiccurrentSegment2.calculateForce(magnets);
+  //dynamiccurrentSegment2.showCurrentElements();
+  //dynamiccurrentSegment2.showElementForces();
   
-  CurrentSegment currentGrid = new CurrentGrid(new PVector(mouseX-width/2, mouseY-height/2, 0), 500, 10, "uniform", 0.1, 10.0, new PVector(0,1,0), configAdjuster, null);
+  //CurrentSegment dynamiccurrentSegment3 = new CurrentLine(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster, null);
+  //dynamiccurrentSegment3.calculateForce(magnets);
+  //dynamiccurrentSegment3.showCurrentElements();
+  //dynamiccurrentSegment3.showElementForces();
+  
+  //CurrentSegment currentGrid = new CurrentGrid(new PVector(mouseX-width/2, mouseY-height/2, 0), 500, 10, "uniform", 0.1, 10.0, new PVector(0,1,0), configAdjuster, null);
+  CurrentSegment currentGrid = new CurrentGrid(new PVector(0, 0, 0), 500, "rotational", 0.1, 10.0, new PVector(0,0,0), configAdjuster, null);
+  currentGrid.calculateForce(magnets);
   currentGrid.showCurrentElements();
+  currentGrid.showElementForces();
 
   camera.beginHUD();
   //display the text on the screen
   textDisplayer = new TextDisplayer(new PVector(50, 50), 10.0, configAdjuster);
   textDisplayer.addLine("a/z: increase/decrease force multiplier: "+ configAdjuster.forceMult);
-  textDisplayer.addLine("q/s: increase/decrease circuit width: "+circuitWidth);
+  textDisplayer.addLine("q/s: increase/decrease current multiplier: "+currentMultiplier);
   textDisplayer.addLine("w/x: increase/decrease circuit height: "+circuitHeight);
   textDisplayer.addLine("e/r: Change force Equation, currently showing: "+ configAdjuster.forceEquation);
   textDisplayer.addLine("d/f: increase/decrease element size: "+ configAdjuster.elementLength);
@@ -102,10 +108,12 @@ void keyPressed() {
     configAdjuster.forceMult = forceMultiplier;
   }
   if (key == 'q') {
-    circuitWidth += 50;
+    currentMultiplier *= 2;
+    configAdjuster.currentMultiplier = currentMultiplier;
   }
   if (key == 's') {
-    circuitWidth -= 50;
+    currentMultiplier /= 2;
+    configAdjuster.currentMultiplier = currentMultiplier;
   }
   if (key == 'w') {
     circuitHeight += 50;
@@ -143,4 +151,6 @@ void keyPressed() {
       amountOfMagnets = 1;
     }
   }
+  
+  
 }

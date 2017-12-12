@@ -3,6 +3,7 @@ public class ConfigAdjuster {
   float elementLength;
   float elementScaler;
   float textSize;
+  float currentMultiplier;
   String forceEquation;
 
   color circuitColor;
@@ -38,5 +39,9 @@ public class ConfigAdjuster {
     this.tailColor = tailColor;
     this.forceLineColor = forceLineColor;
     this.magnetColor = magnetColor;
+  }
+
+  void setCurrentMultiplier (float currentMultiplier) {
+    this.currentMultiplier = currentMultiplier;
   }
 }
