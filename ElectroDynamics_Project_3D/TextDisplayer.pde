@@ -17,7 +17,6 @@ public class TextDisplayer {
   }
 
   void show() {
-    rectangle(
     textSize(textSize);
     float y = position.y;
     for (String line : textList) {
