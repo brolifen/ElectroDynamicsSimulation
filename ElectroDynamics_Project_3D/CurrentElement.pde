@@ -1,4 +1,5 @@
-public class CurrentElement { //<>// //<>//
+public class CurrentElement { //<>//
+  Object rootReference;
   PVector position;
   PVector currentDirection;
   PVector Force;
@@ -7,11 +8,12 @@ public class CurrentElement { //<>// //<>//
 
   ConfigAdjuster configAdjuster;
 
-  CurrentElement(PVector position, PVector currentDirection, float current, ConfigAdjuster configAdjuster) {
+  CurrentElement(PVector position, PVector currentDirection, float current, ConfigAdjuster configAdjuster, Object rootReference) {
     this.position = position;
     this.currentDirection = currentDirection;
     this.currentDirection.normalize();
     this.current = current;
+    this.rootReference = rootReference;
 
     this.Force = new PVector(0, 0, 0);
     this.ds = 30;
@@ -25,7 +27,11 @@ public class CurrentElement { //<>// //<>//
     startSegment = toScreenCoords(startSegment);
     endSegment = toScreenCoords(endSegment);
 
-    drawArrow(startSegment, endSegment, configAdjuster.lineColor);
+    if (this.rootReference instanceof Magnet ) {
+      drawArrow(startSegment, endSegment, configAdjuster.magnetColor);
+    } else {
+      drawArrow(startSegment, endSegment, configAdjuster.circuitColor);
+    }
   }
 
   void drawArrow(PVector start, PVector end, color arrowColor) {

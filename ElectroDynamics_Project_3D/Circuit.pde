@@ -34,10 +34,10 @@ public class RectangularMagnet implements Magnet {
     this.totalforce = new PVector(0, 0, 0);
     this.currentSegments = new ArrayList<CurrentSegment>();
 
-    CurrentSegment currentSegment1 = new CurrentLine(position, new PVector(-circuitWidth/2, circuitHeight/2, 0), new PVector(circuitWidth/2, circuitHeight/2, 0), this.current, configAdjuster);
-    CurrentSegment currentSegment2 = new CurrentLine(position, new PVector(circuitWidth/2, circuitHeight/2, 0), new PVector(circuitWidth/2, -circuitHeight/2, 0), this.current, configAdjuster);
-    CurrentSegment currentSegment3 = new CurrentLine(position, new PVector(circuitWidth/2, -circuitHeight/2, 0), new PVector(-circuitWidth/2, -circuitHeight/2, 0), this.current, configAdjuster);
-    CurrentSegment currentSegment4 = new CurrentLine(position, new PVector(-circuitWidth/2, -circuitHeight/2, 0), new PVector(-circuitWidth/2, circuitHeight/2, 0), this.current, configAdjuster);
+    CurrentSegment currentSegment1 = new CurrentLine(position, new PVector(-circuitWidth/2, circuitHeight/2, 0), new PVector(circuitWidth/2, circuitHeight/2, 0), this.current, configAdjuster, this);
+    CurrentSegment currentSegment2 = new CurrentLine(position, new PVector(circuitWidth/2, circuitHeight/2, 0), new PVector(circuitWidth/2, -circuitHeight/2, 0), this.current, configAdjuster, this);
+    CurrentSegment currentSegment3 = new CurrentLine(position, new PVector(circuitWidth/2, -circuitHeight/2, 0), new PVector(-circuitWidth/2, -circuitHeight/2, 0), this.current, configAdjuster, this);
+    CurrentSegment currentSegment4 = new CurrentLine(position, new PVector(-circuitWidth/2, -circuitHeight/2, 0), new PVector(-circuitWidth/2, circuitHeight/2, 0), this.current, configAdjuster, this);
 
 
     addCurrentSegment(currentSegment1);
@@ -149,10 +149,10 @@ public class SplitCircularMagnet implements Magnet {
     this.totalforce = new PVector(0, 0, 0);
     this.currentSegments = new ArrayList<CurrentSegment>();
 
-    CurrentSegment magnetSegmennt1 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, 180, current, 0,configAdjuster);
-    CurrentSegment magnetSegmennt2 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, -180, -current, 0,configAdjuster);
-    CurrentSegment magnetSegmennt3 = new CurrentLine(translationVector, new PVector(0, -magnetradius, 0), new PVector(0, magnetradius, 0), -current, configAdjuster);
-    CurrentSegment magnetSegmennt4 = new CurrentLine(translationVector, new PVector(0, -magnetradius, 0), new PVector(0, magnetradius, 0), -current, configAdjuster);
+    CurrentSegment magnetSegmennt1 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, 180, current, 0,configAdjuster, this);
+    CurrentSegment magnetSegmennt2 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, -180, -current, 0,configAdjuster, this);
+    CurrentSegment magnetSegmennt3 = new CurrentLine(translationVector, new PVector(0, -magnetradius, 0), new PVector(0, magnetradius, 0), -current, configAdjuster, this);
+    CurrentSegment magnetSegmennt4 = new CurrentLine(translationVector, new PVector(0, -magnetradius, 0), new PVector(0, magnetradius, 0), -current, configAdjuster, this);
     currentSegments.add(magnetSegmennt1);
     currentSegments.add(magnetSegmennt2);
     currentSegments.add(magnetSegmennt3);
@@ -264,7 +264,7 @@ public class CircularMagnet implements Magnet {
     this.totalforce = new PVector(0, 0, 0);
     this.currentSegments = new ArrayList<CurrentSegment>();
 
-    CurrentSegment magnetSegmennt1 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, 360, current, 0, configAdjuster);
+    CurrentSegment magnetSegmennt1 = new CurrentArc(translationVector, new PVector(0, 0, 0), this.radius, 360, current, 0, configAdjuster, this);
 
     currentSegments.add(magnetSegmennt1);
   }

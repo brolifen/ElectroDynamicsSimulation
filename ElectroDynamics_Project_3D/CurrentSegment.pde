@@ -15,8 +15,9 @@ public class CurrentLine implements CurrentSegment {
   PVector currentDirection;
   ConfigAdjuster configAdjuster;
   float current;
+  Object rootReference;
 
-  CurrentLine(PVector translateVector, PVector startPosition, PVector endPosition, float current, ConfigAdjuster configAdjuster) {
+  CurrentLine(PVector translateVector, PVector startPosition, PVector endPosition, float current, ConfigAdjuster configAdjuster, Object rootReference) {
     this.startPosition = startPosition.add(translateVector);
     this.endPosition = endPosition.add(translateVector);
 
@@ -24,6 +25,7 @@ public class CurrentLine implements CurrentSegment {
     this.configAdjuster = configAdjuster;
     this.currentElements = new ArrayList<CurrentElement>();
     this.currentDirection = new PVector();
+    this.rootReference = rootReference;
     createCurrentElements();
   }
 
@@ -37,7 +39,7 @@ public class CurrentLine implements CurrentSegment {
 
     for (int i=1; i < ammountOfElements+1; i++) {
       PVector elementPosition = PVector.add(startPosition, PVector.mult(this.currentDirection, (i*distanceBetweenElements)-distanceBetweenElements/2));
-      CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection.copy().mult((sign(this.current))), this.current, this.configAdjuster);
+      CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection.copy().mult((sign(this.current))), this.current, this.configAdjuster, this.rootReference);
       currentElements.add(currentElement);
     }
   }
@@ -58,7 +60,7 @@ public class CurrentLine implements CurrentSegment {
 
     //draw the line
     strokeWeight(3);
-    stroke(configAdjuster.lineColor);
+    stroke(configAdjuster.circuitColor);
     line(startSegment.x, startSegment.y, startSegment.z, endSegment.x, endSegment.y, endSegment.z);
 
     //draw the arrow tip point
@@ -104,49 +106,49 @@ public class CurrentLine implements CurrentSegment {
 
 public class CurrentGrid implements CurrentSegment {
   ArrayList<CurrentElement> currentElements;
-  PVector center;
-  float radius;
-  float degrees;
-  float shift;
+  PVector translateVector;
+  int gridsize;
+  int gridSpacing ;
+  String type;
+  float currentScaler;
+  float current;
   PVector currentDirection;
   ConfigAdjuster configAdjuster;
-  float current;
+  Object rootReference;
 
-  CurrentGrid(PVector translateVector, float gridsize, float gridSpacing, String type, float currentScaler, PVector currentDirection, ConfigAdjuster configAdjuster) {
-    if (type == "rotational") {
-
-    } else if (type == "uniform") {
-
-    }
-
+  CurrentGrid(PVector translateVector, int gridsize, int gridSpacing, String type, float currentScaler, float current, PVector currentDirection, ConfigAdjuster configAdjuster,Object rootReference) { 
+    this.translateVector = translateVector;
+    this.gridsize = gridsize;
+    this.gridSpacing = gridSpacing;
+    this.type = type;
+    this.currentScaler = currentScaler;
     this.current = current;
-    this.radius = radius;
-    this.degrees = degrees;
-    this.shift = radians(shift);
+    this.currentDirection = currentDirection;
     this.configAdjuster = configAdjuster;
     this.currentElements = new ArrayList<CurrentElement>();
-    this.currentDirection = new PVector();
+    this.rootReference = rootReference;
     createCurrentElements();
   }
 
   void createCurrentElements() {
 
-    int ammountOfElements = int(ammountOfElementsReal);
+    int ammountOfElements = int(this.gridsize/this.gridSpacing);
 
-
-    for (int i=1; i < ammountOfElements+1; i++) {
-      PVector radialPosition = new PVector (radius*sin((unitAngle*i)-unitAngle/2+this.shift), radius*cos(((unitAngle*i)-unitAngle/2)+this.shift));
-
-      PVector tangentVector = radialPosition.copy().rotate(HALF_PI).normalize();
-      this.currentDirection = tangentVector.mult(sign(this.current));
-      this.currentDirection.z = 0.0;
-      
-      PVector elementPosition = PVector.add(this.center, radialPosition);
-
-      CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection, this.current, this.configAdjuster);
-      currentElements.add(currentElement);
+    if (this.type == "rotational") {
+    } else if (this.type == "uniform") {
+      for (int i=1; i < ammountOfElements+1; i++) {
+        int xPosition = -this.gridsize/2 + this.gridSpacing * i;
+        for (int j=1; j < ammountOfElements+1; j++) {
+          int yPosition = this.gridsize/2 - this.gridSpacing * j;
+          PVector elementPosition = new PVector(xPosition, yPosition,0);
+          elementPosition.add(this.translateVector);
+          CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection.mult(currentScaler), this.current, this.configAdjuster,this.rootReference);
+          currentElements.add(currentElement);
+        }
+      }
     }
   }
+
 
   ArrayList<CurrentElement> getCurrentElements() {
     return this.currentElements;
@@ -159,23 +161,6 @@ public class CurrentGrid implements CurrentSegment {
   }
 
   void show() {
-    PVector startSegment = toScreenCoords(this.center.copy());
-    PVector endSegment = toScreenCoords(this.center.copy());
-
-    //draw the line
-    strokeWeight(3);
-    stroke(configAdjuster.lineColor);
-    line(startSegment.x, startSegment.y, endSegment.x, endSegment.y);
-
-    //draw the arrow tip point
-    strokeWeight(10);
-    stroke(configAdjuster.tipColor);
-    point(startSegment.x, startSegment.y);
-
-    //draw the arrow tail point
-    strokeWeight(7);
-    stroke(configAdjuster.tailColor);
-    point(endSegment.x, endSegment.y);
   }
 
   void showElementForces() {
@@ -203,9 +188,9 @@ public class CurrentGrid implements CurrentSegment {
   }
 
   void updateScreenPosition(PVector newPosition) {
-    this.center = center.add(newPosition);
   }
 }
+
 
 public class CurrentArc implements CurrentSegment {
   ArrayList<CurrentElement> currentElements;
@@ -216,8 +201,9 @@ public class CurrentArc implements CurrentSegment {
   PVector currentDirection;
   ConfigAdjuster configAdjuster;
   float current;
+  Object rootReference;
 
-  CurrentArc(PVector translateVector, PVector center, float radius, float degrees, float current, float shift, ConfigAdjuster configAdjuster) {
+  CurrentArc(PVector translateVector, PVector center, float radius, float degrees, float current, float shift, ConfigAdjuster configAdjuster, Object rootReference) {
     if (current >=0) {
       this.center = center.add(translateVector);
     } else if (current < 0) {
@@ -231,6 +217,7 @@ public class CurrentArc implements CurrentSegment {
     this.configAdjuster = configAdjuster;
     this.currentElements = new ArrayList<CurrentElement>();
     this.currentDirection = new PVector();
+    this.rootReference = rootReference;
     createCurrentElements();
   }
 
@@ -248,10 +235,10 @@ public class CurrentArc implements CurrentSegment {
       PVector tangentVector = radialPosition.copy().rotate(HALF_PI).normalize();
       this.currentDirection = tangentVector.mult(sign(this.current));
       this.currentDirection.z = 0.0;
-      
+
       PVector elementPosition = PVector.add(this.center, radialPosition);
 
-      CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection, this.current, this.configAdjuster);
+      CurrentElement currentElement = new CurrentElement(elementPosition, this.currentDirection, this.current, this.configAdjuster, this.rootReference);
       currentElements.add(currentElement);
     }
   }
@@ -272,7 +259,7 @@ public class CurrentArc implements CurrentSegment {
 
     //draw the line
     strokeWeight(3);
-    stroke(configAdjuster.lineColor);
+    stroke(configAdjuster.circuitColor);
     line(startSegment.x, startSegment.y, endSegment.x, endSegment.y);
 
     //draw the arrow tip point

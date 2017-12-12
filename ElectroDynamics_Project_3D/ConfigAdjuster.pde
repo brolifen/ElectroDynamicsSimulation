@@ -5,10 +5,11 @@ public class ConfigAdjuster {
   float textSize;
   String forceEquation;
 
-  color lineColor;
+  color circuitColor;
   color tipColor;
   color tailColor;
   color forceLineColor;
+  color magnetColor;
 
   ConfigAdjuster() {
     this.elementScaler = 1.0;
@@ -31,10 +32,11 @@ public class ConfigAdjuster {
     this.forceEquation = forceEquation;
   }
 
-  void setColors (color lineColor, color tipColor, color tailColor, color forceLineColor) {
-    this.lineColor = lineColor;
+  void setColors (color circuitColor, color tipColor, color tailColor, color forceLineColor, color magnetColor) {
+    this.circuitColor = circuitColor;
     this.tipColor = tipColor;
     this.tailColor = tailColor;
     this.forceLineColor = forceLineColor;
+    this.magnetColor = magnetColor;
   }
 }

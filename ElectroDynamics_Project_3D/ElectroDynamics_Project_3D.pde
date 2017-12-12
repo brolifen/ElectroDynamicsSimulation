@@ -26,10 +26,11 @@ float magnetradius = circuitWidth;
 int amountOfMagnets = 1;
 
 //defining the colors
-color lineColor = color(200, 122, 23);
+color circuitElementColor = color(200, 122, 23);
 color tipColor = color(125, 0, 0);
 color tailColor = color(0, 0, 255);
 color forceLineColor = color(125, 255, 0);
+color magnetElementColor = color(255, 0, 0);
 
 void setup () {
   size(1000, 1000, P3D);
@@ -40,7 +41,7 @@ void setup () {
   configAdjuster = new ConfigAdjuster();
   configAdjuster.setForceMultiplier(forceMultiplier);
   configAdjuster.setElementLength(elementLength);
-  configAdjuster.setColors(lineColor, tipColor, tailColor, forceLineColor);
+  configAdjuster.setColors(circuitElementColor, tipColor, tailColor, forceLineColor, magnetElementColor);
   configAdjuster.textSize = textSize;
 }
 
@@ -57,20 +58,23 @@ void draw() {
   //create the movable current segment, calculate the forces on it and show it
   //CurrentSegment dynamiccurrentSegment = new LineSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), new PVector(circuitWidth*2, 0, 0), magnetCurrent, configAdjuster);
   //CurrentSegment dynamiccurrentSegment = new ArcSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
-  CurrentSegment dynamiccurrentSegment = new CurrentArc(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
+  CurrentSegment dynamiccurrentSegment = new CurrentArc(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster, null);
   dynamiccurrentSegment.calculateForce(magnets);
   dynamiccurrentSegment.showCurrentElements();
   dynamiccurrentSegment.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment2 = new CurrentLine(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster);
+  CurrentSegment dynamiccurrentSegment2 = new CurrentLine(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster, null);
   dynamiccurrentSegment2.calculateForce(magnets);
   dynamiccurrentSegment2.showCurrentElements();
   dynamiccurrentSegment2.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment3 = new CurrentLine(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster);
+  CurrentSegment dynamiccurrentSegment3 = new CurrentLine(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster, null);
   dynamiccurrentSegment3.calculateForce(magnets);
   dynamiccurrentSegment3.showCurrentElements();
   dynamiccurrentSegment3.showElementForces();
+  
+  CurrentSegment currentGrid = new CurrentGrid(new PVector(mouseX-width/2, mouseY-height/2, 0), 500, 10, "uniform", 0.1, 10.0, new PVector(0,1,0), configAdjuster, null);
+  currentGrid.showCurrentElements();
 
   camera.beginHUD();
   //display the text on the screen
