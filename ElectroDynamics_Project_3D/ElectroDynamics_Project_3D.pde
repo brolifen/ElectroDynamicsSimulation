@@ -57,17 +57,17 @@ void draw() {
   //create the movable current segment, calculate the forces on it and show it
   //CurrentSegment dynamiccurrentSegment = new LineSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), new PVector(circuitWidth*2, 0, 0), magnetCurrent, configAdjuster);
   //CurrentSegment dynamiccurrentSegment = new ArcSegment(new PVector(mouseX-width/2, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
-  CurrentSegment dynamiccurrentSegment = new ArcSegment(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
+  CurrentSegment dynamiccurrentSegment = new CurrentArc(new PVector(0, 0, 0), new PVector(0, 0, 0), 110, 180, circuitCurrent, 90.0, configAdjuster);
   dynamiccurrentSegment.calculateForce(magnets);
   dynamiccurrentSegment.showCurrentElements();
   dynamiccurrentSegment.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment2 = new LineSegment(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster);
+  CurrentSegment dynamiccurrentSegment2 = new CurrentLine(new PVector(0, 0, 0), new PVector(110, 0, 0), new PVector(2*110, 0, 0), circuitCurrent, configAdjuster);
   dynamiccurrentSegment2.calculateForce(magnets);
   dynamiccurrentSegment2.showCurrentElements();
   dynamiccurrentSegment2.showElementForces();
   
-  CurrentSegment dynamiccurrentSegment3 = new LineSegment(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster);
+  CurrentSegment dynamiccurrentSegment3 = new CurrentLine(new PVector(0, 0, 0), new PVector(-2*110, 0, 0), new PVector(-110, 0, 0), circuitCurrent, configAdjuster);
   dynamiccurrentSegment3.calculateForce(magnets);
   dynamiccurrentSegment3.showCurrentElements();
   dynamiccurrentSegment3.showElementForces();
