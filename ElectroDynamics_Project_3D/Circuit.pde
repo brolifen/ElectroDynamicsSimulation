@@ -8,6 +8,7 @@ public interface Magnet {
   void showCurrentElements();
   PVector getTotalForce();
 }
+##test
 
 
 public class RectangularMagnet implements Magnet {
